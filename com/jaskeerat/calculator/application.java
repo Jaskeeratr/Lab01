@@ -13,7 +13,7 @@ public class application {
         } else {
             // No CLI arguments, ask for user input
             while (true) {
-                System.out.println("\nEnter operation (add, subtract, multiply, divide, pow, sqrt, log, log10, sin, cos, tan, factorial) or 'exit' to quit:");
+                System.out.println("\nEnter operation (add, subtract, multiply, divide, pow, sqrt, log, log10, sin, cos, tan, factorial, permutations) or 'exit' to quit:");
                 String operation = scanner.next();
 
                 if (operation.equalsIgnoreCase("exit")) {
@@ -24,7 +24,7 @@ public class application {
                 // For operations requiring two inputs
                 if (!operation.equalsIgnoreCase("sqrt") && !operation.equalsIgnoreCase("log") && !operation.equalsIgnoreCase("log10") &&
                         !operation.equalsIgnoreCase("sin") && !operation.equalsIgnoreCase("cos") && !operation.equalsIgnoreCase("tan") &&
-                        !operation.equalsIgnoreCase("factorial")) {
+                        !operation.equalsIgnoreCase("factorial") && !operation.equalsIgnoreCase("permutations")) {
                     System.out.print("Enter first number: ");
                     double num1 = scanner.nextDouble();
                     System.out.print("Enter second number: ");
@@ -53,6 +53,18 @@ public class application {
                         default:
                             System.out.println("Invalid operation.");
                             break;
+                    }
+                } else if (operation.equalsIgnoreCase("permutations")) {
+                    System.out.print("Enter total number of elements: ");
+                    int totalElements = scanner.nextInt();
+                    System.out.print("Enter number of elements to select: ");
+                    int elementsToSelect = scanner.nextInt();
+
+                    if (validatePermutationInputs(totalElements, elementsToSelect)) {
+                        System.out.println("Result (Recursive): " + permutationsRecursive(totalElements, elementsToSelect));
+                        System.out.println("Result (Iterative): " + permutationsIterative(totalElements, elementsToSelect));
+                    } else {
+                        System.out.println("Invalid input for permutations.");
                     }
                 } else {
                     // For operations requiring one input
@@ -162,6 +174,17 @@ public class application {
                         System.out.println("Error: Factorial of negative number is undefined.");
                     }
                     break;
+                case "permutations":
+                    int totalElements = Integer.parseInt(args[++i]);
+                    int elementsToSelect = Integer.parseInt(args[++i]);
+
+                    if (validatePermutationInputs(totalElements, elementsToSelect)) {
+                        System.out.println("Result (Recursive): " + permutationsRecursive(totalElements, elementsToSelect));
+                        System.out.println("Result (Iterative): " + permutationsIterative(totalElements, elementsToSelect));
+                    } else {
+                        System.out.println("Invalid input for permutations.");
+                    }
+                    break;
                 default:
                     System.out.println("Invalid operation.");
                     break;
@@ -242,5 +265,27 @@ public class application {
         int progress = (int) (((originalNum - num + 1) / (double) originalNum) * 100);
         System.out.print("\rCalculating factorial: " + progress + "%");
         return num * factorialHelper(originalNum, num - 1);
+    }
+
+    // Method for validating permutation inputs
+    private static boolean validatePermutationInputs(int totalElements, int elementsToSelect) {
+        return totalElements >= 0 && elementsToSelect >= 0 && totalElements >= elementsToSelect;
+    }
+
+    // Recursive method for calculating permutations
+    private static long permutationsRecursive(int n, int r) {
+        if (r == 0) {
+            return 1;
+        }
+        return n * permutationsRecursive(n - 1, r - 1);
+    }
+
+    // Iterative method for calculating permutations
+    private static long permutationsIterative(int n, int r) {
+        long result = 1;
+        for (int i = 0; i < r; i++) {
+            result *= (n - i);
+        }
+        return result;
     }
 }
